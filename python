@@ -1,0 +1,33 @@
+import requests
+import re
+
+from bs4 import BeautifulSoup
+response = requests.get('https://www.audiusa.com')
+soup = BeautifulSoup(response.content, 'html.parser')
+total_links = []
+links = []
+links2 = []
+running = True
+def finder(web):
+  global links
+  global links2
+  global total_links
+  links3 = []
+  for link in web.find_all('a'):
+    links.append(link.get('href'))
+  for i in links:
+    matches = re.findall(r'\.com', i)
+    if len(matches) >= 1:
+      links2.append(i)
+  for i in links2:
+    matches = re.findall(r'https', i)
+    if len(matches) >= 1:
+      links3.append(i)
+  links2 = links3
+  total_links.append(links2.copy())
+  links = links2
+finder(soup)
+links3 = links
+print(total_links)
+
+
